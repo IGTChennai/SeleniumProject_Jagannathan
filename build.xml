@@ -1,0 +1,79 @@
+<project name="seeTestTemplateJunit" default="compile">
+	<!-- compile the project -->
+
+	<target name="compile">
+		<property name="build.compiler" value="extJavac" />
+		<delete dir="classes" failonerror="false" />
+		<mkdir dir="classes" />
+		<path id="lib.path.ref">
+			<fileset dir="lib" includes="*.jar" />
+			<fileset dir="libs" includes="*.jar" />
+		</path>
+		<javac srcdir="src" destdir="classes" classpathref="lib.path.ref"
+			includeantruntime="false" />
+		<copy todir="classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+	</target>
+	<path id="project.classpath">
+		<pathelement location="classes" />
+		<fileset dir="lib" includes="*.jar" />
+		<fileset dir="libs" includes="*.jar" />
+	</path>
+
+	<!-- configure execution suites (to run in parallel) -->
+	<!-- <target name="execute_suites">
+		<tstamp>
+			<format property="execution.start.time" pattern="MM-dd-yyyy HH.mm,ss"
+				unit="hour" />
+		</tstamp>
+
+		<parallel>
+			<antcall target="sandbox_suite">
+				<param name="host" value="localhost" />
+				<param name="port" value="8889" />
+			</antcall>
+		</parallel>
+
+	</target> -->
+
+	<!-- configure the tests set of the following suite -->
+	<target name="sandbox_suite">
+		<property name="suite.name" value="sandbox_suite" />
+		<property name="host" value="${host}" />
+		<property name="port" value="${port}" />
+
+
+		<antcall target="run_test">
+			<param name="host" value="${host}" />
+			<param name="port" value="${port}" />
+			<param name="browser" value="win_chrome" />
+			<param name="baseUrl" value="https://qa2.gtech.com/content/portal/fr/home.html" />
+		</antcall>
+
+	</target>
+
+
+
+	<!-- generic target to execute a single junit class -->
+	<target name="run_test">
+		<junit fork="yes">
+			<sysproperty key="execution.start.time" value="${execution.start.time}" />
+			<sysproperty key="suite.name" value="${suite.name}" />
+			<sysproperty key="host" value="${host}" />
+			<sysproperty key="port" value="${port}" />
+			<sysproperty key="device.name" value="${device.name}" />
+			<sysproperty key="project.base.directory" value="D:\\SVN\\PDmobile" />
+			<sysproperty key="apk_or_ipa_LOC" value="${apk_or_ipa_LOC}" />
+
+			<sysproperty key="browser" value="${browser}" />
+			<sysproperty key="baseUrl" value="${baseUrl}" />
+
+			<formatter type="plain" usefile="false" />
+			<classpath refid="project.classpath" />
+			<test name="main.java.com.gtech.junit.ConfigStory" />
+
+		</junit>
+	</target>
+
+</project>
